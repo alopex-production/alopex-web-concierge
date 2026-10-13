@@ -304,3 +304,16 @@ img,svg{max-width:100%}
   .hero-art{width:215px;height:215px}
   .hero-bottom{left:19px;right:19px}
 }
+
+/* v10.6: definitive mobile hero logo visibility and placement */
+@media screen and (max-width:650px){
+.hero.hero-mobile-fixed{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;min-height:0!important;height:auto!important;padding:0 0 76px!important;overflow:hidden!important}
+.hero.hero-mobile-fixed .hero-content{order:1!important;position:relative!important;width:100%!important;max-width:100%!important;flex:0 0 auto!important;margin:0!important;padding:55px 22px 0!important;z-index:4!important}
+.hero.hero-mobile-fixed .hero-art{order:2!important;position:relative!important;inset:auto!important;right:auto!important;left:auto!important;top:auto!important;bottom:auto!important;opacity:1!important;visibility:visible!important;transform:none!important;flex:0 0 auto!important;display:grid!important;place-items:center!important;width:230px!important;height:230px!important;margin:36px auto 12px!important;z-index:3!important}
+.hero.hero-mobile-fixed .hero-art-glow{position:absolute!important;inset:3%!important;opacity:.95!important}
+.hero.hero-mobile-fixed .logo-orbit{width:88%!important;height:auto!important;aspect-ratio:1!important;position:relative!important;z-index:3!important}
+.hero.hero-mobile-fixed .logo-orbit img{display:block!important;visibility:visible!important;opacity:1!important;width:92%!important;height:92%!important;object-fit:contain!important}
+.hero.hero-mobile-fixed .hero-art-label{display:none!important}
+.hero.hero-mobile-fixed .hero-bottom{position:absolute!important;bottom:20px!important;left:22px!important;right:22px!important;z-index:3!important}
+.hero.hero-mobile-fixed:after{right:-80%!important;top:5%!important}
+}
