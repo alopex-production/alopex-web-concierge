@@ -226,3 +226,81 @@ img,svg{max-width:100%}
   footer{max-width:100%}
 }
 @media(max-width:370px){.service-grid{grid-template-columns:1fr}}
+
+
+/* v10.5 — iPhone hero identity restoration */
+@media (max-width:650px) {
+  .hero {
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    justify-content:flex-start;
+    min-height:0;
+    height:auto;
+    padding-bottom:70px;
+    overflow:hidden;
+  }
+  .hero-content {
+    flex:none;
+    width:100%;
+    max-width:100%;
+    margin:0;
+    padding:65px 24px 0;
+    position:relative;
+    z-index:3;
+  }
+  .hero h1 {
+    font-size:clamp(34px,8.4vw,48px);
+    line-height:1.45;
+  }
+  .hero-art {
+    position:relative;
+    inset:auto;
+    right:auto;
+    top:auto;
+    flex:none;
+    opacity:1;
+    width:min(64vw,250px);
+    height:min(64vw,250px);
+    margin:30px auto 18px;
+    display:grid;
+    place-items:center;
+    z-index:2;
+    transform:none;
+  }
+  .hero-art-glow {
+    inset:4%;
+    opacity:.86;
+  }
+  .logo-orbit {
+    width:88%;
+    aspect-ratio:1;
+    position:relative;
+    z-index:1;
+  }
+  .logo-orbit img {
+    display:block;
+    width:94%;
+    height:94%;
+    object-fit:contain;
+  }
+  .hero-art-label {display:none}
+  .hero-bottom {
+    left:24px;
+    right:24px;
+    bottom:23px;
+    font-size:9px;
+    letter-spacing:.12em;
+    z-index:3;
+  }
+  .hero:after {
+    right:-80%;
+    top:5%;
+    pointer-events:none;
+  }
+}
+@media(max-width:370px){
+  .hero-content{padding-inline:19px}
+  .hero-art{width:215px;height:215px}
+  .hero-bottom{left:19px;right:19px}
+}
