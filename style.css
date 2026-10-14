@@ -332,3 +332,22 @@ img,svg{max-width:100%}
 @media screen and (max-width:380px){
   .hero.hero-mobile-fixed .hero-art{top:250px!important;right:-48px!important;width:138px!important;height:138px!important;opacity:.76!important}
 }
+
+
+/* v10.9 — mobile readability and typography finishing */
+@media screen and (max-width:650px){
+  .process-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 14px}
+  .process-grid>div{min-width:0;padding:23px 5px 24px}
+  .process-grid strong{display:block;font-size:clamp(12px,3.25vw,15px);line-height:1.65;letter-spacing:-.045em;overflow-wrap:normal;word-break:normal}
+  .process-grid p{font-size:clamp(11px,2.9vw,13px);line-height:1.85;letter-spacing:-.025em;overflow-wrap:normal;word-break:normal}
+  .process-grid span{margin-bottom:20px}
+  .brand-copy p{overflow-wrap:normal;word-break:normal;line-height:2.05}
+  .brand-copy small{line-height:1.75}
+  .diagnosis-heading>p:not(.section-tag){line-height:1.95;overflow-wrap:normal;word-break:normal}
+  .comparison-section .compare-foot p{line-height:1.9}
+}
+@media screen and (max-width:380px){
+  .process-grid{column-gap:12px}
+  .process-grid strong{font-size:12px}
+  .process-grid p{font-size:11px}
+}
