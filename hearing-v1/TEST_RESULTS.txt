@@ -1,0 +1,16 @@
+PASS 162 unique questions across 16 sections
+PASS photo branches independent multiple selection
+PASS video excluded when unnecessary
+PASS required and optional, invalid email, unsafe URL
+PASS hidden stale data excluded from payload
+PASS missing connection fails closed
+PASS cross origin rejected
+PASS homepage response
+PASS server source not exposed
+PASS receiver rejects wrong secret
+PASS receiver persists normalized rows in simulation
+PASS same submission ID does not duplicate
+PASS receiver rejects missing required answers
+PASS formula injection neutralized
+PASS rate limit blocks another submission for same contact
+TOTAL 15 checks. Google persistence is SIMULATED, not live.
