@@ -1,0 +1,8 @@
+.env*
+!.env.example
+private/
+*.enc
+*sensitive*.json
+access-registry.json
+__pycache__/
+*.pyc
