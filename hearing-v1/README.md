@@ -1,6 +1,6 @@
 # ALOPEX WEB CONCIERGE 詳細ヒアリング V1.0
 
-状態：実装済み・単体検証済み／非公開公開・実Google保存は未完了。本番利用不可。
+状態：代表限定の確認サイト公開・実画面送信・実Google保存・重複防止・HTTP503時の復旧再送を検収済み。詳細は E2E_RESULTS_20261113.md。クライアント向け本番運用は未開始。
 
 ## 構成
 162問・16分野。各項目の任意備考、複数回答、写真・動画・参考サイト分岐、進捗、30日期限の端末保存、再開、必須検証、送信前確認、受付IDによる再送、完了画面を実装。独自CSSのデザイン見本6種。
@@ -45,3 +45,7 @@ Cloudflare Pages採用の場合は独立プロジェクトを作り、Worker相�
 - Sitesは独立したprivateプロジェクト作成済み。source同期はgit.chatgpt-team.siteのDNS解決失敗。デプロイ成功・閲覧URL発行とは扱わない。
 - ローカルHTTPサーバーはsocket bindでOperation not permitted。PC/スマホの視覚QA・キーボード操作・端末保存/再開・実送信は未実測。
 - Google Apps Scriptのデプロイ操作ツールは現在利用できない。Google承認・連携設定と実保存確認は残作業。
+
+## 最新実測（2026-11-13）
+確認URL: https://alopex-concierge-hearing-v1.smart-drake-4743.chatgpt.site
+上記「実装時の結果」は初回時点の履歴。現在の状態は E2E_RESULTS_20261113.md を優先する。停止はGAS_URLを無効なURLへ置換して再デプロイ（HTTP503確認済み）。環境変数削除のみでの停止は検証不成立のため依存しない。
