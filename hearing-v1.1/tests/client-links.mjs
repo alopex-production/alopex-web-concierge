@@ -1,0 +1,25 @@
+import assert from 'node:assert/strict';import fs from 'node:fs';import {hashToken,exchangeLink,clientPrincipal} from '../src/client-links.mjs';import {payload} from '../dist/core.mjs';
+const {default:w}=await import('../dist/server/index.js');let n=0;const t=async(name,fn)=>{await fn();n++;console.log('PASS '+name)};
+const token='a'.repeat(64),hash=await hashToken(token),now=Date.parse('2026-11-13T00:00:00Z'),link={tokenHash:hash,projectId:'RJB-20261113',expiresAt:'2026-12-13T14:59:59Z',enabled:true};
+const env={DEPLOYMENT_MODE:'token_clients',CLIENT_LINKS_ENABLED:'true',CLIENT_RELEASE_APPROVED:'true',ACCESS_COOKIE_SECRET:'test-only-cookie-secret-'.repeat(3),CLIENT_LINKS:JSON.stringify({version:1,links:[link]}),ACCEPT_SUBMISSIONS:'true',GAS_URL:'https://script.google.com/macros/s/UNIT/exec',GAS_SECRET:'test-only'};
+let x=await exchangeLink(token,env,now),cookie=x.cookie.split(';')[0];const req=(cookieValue=cookie,path='/api/session',body=null)=>new Request('https://qa.test'+path,{method:body===null?'GET':'POST',headers:{Cookie:cookieValue,Origin:'https://qa.test','Content-Type':'application/json'},...(body===null?{}:{body:JSON.stringify(body)})});
+await t('256-bit token exchange without ChatGPT identity',()=>{assert.equal(x.projectId,link.projectId);assert(x.cookie.includes('HttpOnly'));assert(x.cookie.includes('SameSite=Strict'));assert(!x.cookie.includes(token));});
+await t('wrong token denied',async()=>assert.equal((await exchangeLink('b'.repeat(64),env,now)).status,403));
+await t('expired link denied',async()=>assert.equal((await exchangeLink(token,env,Date.parse('2027-01-01T00:00:00Z'))).status,403));
+await t('disabled link denied',async()=>assert.equal((await exchangeLink(token,{...env,CLIENT_LINKS:JSON.stringify({version:1,links:[{...link,enabled:false}]})},now)).status,403));
+await t('cookie grants exact project only',async()=>assert.equal((await clientPrincipal(req(),env,link.projectId,now)).projectId,link.projectId));
+await t('project forgery denied',async()=>assert.equal((await clientPrincipal(req(),env,'OTHER-PROJECT',now)).status,403));
+await t('forged cookie denied',async()=>assert.equal((await clientPrincipal(req(cookie.slice(0,-1)+(cookie.endsWith('0')?'1':'0')),env,null,now)).status,403));
+await t('cookie expiry enforced',async()=>assert.equal((await clientPrincipal(req(),env,null,now+86401000)).status,403));
+await t('revocation invalidates already-issued cookie',async()=>assert.equal((await clientPrincipal(req(),{...env,CLIENT_LINKS:JSON.stringify({version:1,links:[{...link,enabled:false}]})},null,now)).status,403));
+await t('missing cookie cannot read questions',async()=>assert.equal((await w.fetch(req('', '/schema.json'),env)).status,401));
+await t('missing cookie cannot access operator status',async()=>assert.equal((await w.fetch(req('', '/api/ops/access'),env)).status,401));
+await t('link exchange rejects cross-origin request',async()=>{const r=new Request('https://qa.test/api/access',{method:'POST',headers:{Origin:'https://evil.test','Content-Type':'application/json'},body:JSON.stringify({token})});assert.equal((await w.fetch(r,env)).status,403)});
+// Use a fresh cookie at wall-clock time for actual worker tests.
+x=await exchangeLink(token,env);cookie=x.cookie.split(';')[0];
+await t('public session works with token cookie and no identity header',async()=>{const r=await w.fetch(req(),env);assert.equal(r.status,200);assert.equal((await r.json()).projectId,link.projectId)});
+const schema=JSON.parse(fs.readFileSync(new URL('../dist/schema.json',import.meta.url))),a={};for(const q of schema.questions)if(q.required)a[q.id]=q.type==='multi'?[q.options[0]]:q.type==='design'?'白基調':q.type==='single'?q.options[0]:q.type==='email'?'test@example.com':'テスト';
+const body=payload(schema,a,{},'client-test-0001',link.projectId),orig=globalThis.fetch;let received;
+globalThis.fetch=async(_,init)=>{received=JSON.parse(init.body);return Response.json({ok:true,submissionId:received.submissionId,notificationStatus:'sent'})};
+await t('token-authenticated form saves using original Google contract',async()=>{const r=await w.fetch(req(cookie,'/api/submit',body),env);assert.equal(r.status,200);assert.equal(received.projectId,link.projectId);assert.equal(received.schemaVersion,'1.0.0');assert(!JSON.stringify(received).includes(token))});
+globalThis.fetch=orig;console.log('TOTAL '+n+' client-link checks.');

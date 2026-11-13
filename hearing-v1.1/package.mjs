@@ -5,7 +5,7 @@ const original=JSON.parse(read('../hearing-v1/dist/schema.json'));
 if(JSON.stringify(schema)!==JSON.stringify(original))throw Error('V1.0 schema must remain identical');
 const assets={};
 for(const file of ['index.html','style.css','app.js','core.mjs','schema.json','ops.html','ops.js'])assets['/'+file]={body:read('dist/'+file),type:file.endsWith('.html')?'text/html; charset=utf-8':file.endsWith('.css')?'text/css':file.endsWith('.json')?'application/json; charset=utf-8':'text/javascript; charset=utf-8'};
-const core=read('dist/core.mjs').replaceAll('export ',''),access=read('src/access.mjs').replaceAll('export ','');
+const core=read('dist/core.mjs').replaceAll('export ',''),access=read('src/access.mjs').replaceAll('export ','')+'\n'+read('src/client-links.mjs').replaceAll('export ','');
 fs.mkdirSync(new URL('dist/server/',root),{recursive:true});
 fs.writeFileSync(new URL('dist/server/index.js',root),`${core}\n${access}\nconst schema=${JSON.stringify(schema)};\nconst assets=${JSON.stringify(assets)};\n${read('src/worker.mjs')}`);
 console.log('Packaged V1.1; original 162-question schema unchanged.');
