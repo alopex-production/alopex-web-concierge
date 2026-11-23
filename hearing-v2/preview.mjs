@@ -25,7 +25,8 @@ export function fixture(origin) {
     ['/hearing-v2/',['index.html','text/html; charset=utf-8']],
     ['/hearing-v2/app.mjs',['app.mjs','text/javascript']],
     ['/hearing-v2/core.mjs',['core.mjs','text/javascript']],
-    ['/hearing-v2/style.css',['style.css','text/css']]
+    ['/hearing-v2/style.css',['style.css','text/css']],
+    ['/hearing-v2/alopex-logo.PNG',['alopex-logo.PNG','image/png']]
   ]);
   const env={
     DB:{prepare(sql){return {bind(...args){

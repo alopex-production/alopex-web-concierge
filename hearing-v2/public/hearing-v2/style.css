@@ -15,7 +15,15 @@
 [hidden] { display: none !important; }
 body { margin: 0; background: var(--paper); color: var(--ink); }
 main { max-width: 1200px; margin: auto; padding: 0 clamp(16px, 4vw, 48px) 48px; overflow-wrap: anywhere; }
-.brandbar { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 18px; padding: 22px 0; border-bottom: 1px solid var(--line); margin-bottom: clamp(22px, 5vw, 58px); }
+.brandbar { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 18px; padding: 22px 0; border-bottom: 1px solid var(--line); margin-bottom: clamp(22px, 5vw, 58px); }
+.brand-logo {
+  flex: none;
+  width: clamp(110px, 16vw, 152px);
+  border-radius: 12px;
+  background: var(--ink);
+  padding: 8px 12px;
+}
+.brand-logo img { display: block; width: 100%; height: auto; }
 .brand { margin: 0; font-size: .85rem; font-weight: 750; letter-spacing: .1em; }
 .service { margin: 0; font-size: .875rem; color: var(--muted); }
 .welcome { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 5vw, 64px); align-items: center; }
