@@ -1,23 +1,69 @@
 <!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer"><title>WEB制作ヒアリング | ALOPEX WEB CONCIERGE</title><link rel="stylesheet" href="./style.css"><script type="module" src="./app.mjs"></script></head>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>WEB制作ヒアリング | ALOPEX WEB CONCIERGE</title>
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.mjs"></script>
+</head>
 <body><main>
-<header><p class="brand">ALOPEX WEB CONCIERGE</p><h1>WEB制作ヒアリング</h1></header>
-<p id="status" role="status"></p>
-<form id="entry" hidden>
-<p>ご入力のメールアドレスへ、回答の開始・再開に使う専用リンクをお送りします。有効期間は30日間です。</p>
-<label>会社・店舗名<input name="company" autocomplete="organization" maxlength="180" required></label>
-<label>担当者名<input name="contact" autocomplete="name" maxlength="180" required></label>
-<label>メールアドレス<input name="email" autocomplete="email" maxlength="254" type="email" required></label>
-<p class="privacy">入力内容は、ヒアリングとWEB制作のご連絡に使用します。</p>
-<button>専用リンクをメールで受け取る</button>
-</form>
-<section id="workspace" hidden>
-<label>分野<select id="section"></select></label>
-<p id="progress"></p>
-<h2 id="heading" tabindex="-1"></h2><div id="questions"></div>
-<div class="actions"><button id="prev" class="secondary">前の分野</button><button id="next" class="secondary">次の分野</button><button id="save">途中保存</button><button id="submit" hidden>回答を確定</button></div>
-<div id="confirm" hidden><p>確定後は回答を編集できません。</p><button id="finalize">確定して送信</button> <button id="cancel" class="secondary">編集に戻る</button></div>
-</section>
-<button id="retry" hidden>確定済み回答の送信を再確認</button>
-<a id="home" href="./" hidden>新しいヒアリングを開始</a>
+  <header class="brandbar">
+    <p class="brand">ALOPEX WEB CONCIERGE</p>
+    <p class="service">WEB制作ヒアリング</p>
+  </header>
+  <div id="entry-layout" class="welcome">
+    <div class="intro">
+      <h1>あなたの想いを、<br>一緒にカタチに。</h1>
+      <p>理想のWEBサイトづくりに向けて、あなたの事業についてお聞かせください。途中保存できますので、ご自身のペースで進めていただけます。</p>
+    </div>
+    <form id="entry" class="card" hidden>
+      <h2>ヒアリングを始める</h2>
+      <label>会社・店舗名<input name="company" autocomplete="organization" maxlength="180" required></label>
+      <label>担当者名<input name="contact" autocomplete="name" maxlength="180" required></label>
+      <label>メールアドレス<input name="email" autocomplete="email" maxlength="254" type="email" required></label>
+      <p class="hint">入力したアドレスに、開始・再開用の専用リンクを送ります。有効期間は30日間です。</p>
+      <button>専用リンクをメールで受け取る</button>
+      <p class="hint">入力内容は、ヒアリングとWEB制作のご連絡に使用します。</p>
+    </form>
+  </div>
+  <p id="status" class="notice" role="status" aria-live="polite"></p>
+  <section id="workspace" class="workspace" aria-label="ヒアリング回答" hidden>
+    <aside class="card navigator">
+      <label for="section" class="compact-nav">分野を選ぶ</label>
+      <select id="section" class="compact-nav"></select>
+      <nav class="wide-nav" aria-label="ヒアリングの分野"><ol id="section-list"></ol></nav>
+    </aside>
+    <article class="card questions-card">
+      <p id="step" class="step"></p>
+      <h2 id="heading" tabindex="-1"></h2>
+      <label for="meter" id="progress"></label>
+      <progress id="meter" value="0" max="1"></progress>
+      <div id="questions"></div>
+      <p id="save-status" class="notice" role="status" aria-live="polite"></p>
+      <div class="actions">
+        <button id="prev" class="secondary">前の分野</button>
+        <button id="save" class="secondary">途中保存</button>
+        <button id="next">次の分野</button>
+        <button id="submit" hidden>回答を確認する</button>
+      </div>
+    </article>
+  </section>
+  <section id="confirm" class="card narrow" aria-labelledby="confirm-title" hidden>
+    <h2 id="confirm-title" tabindex="-1">回答の最終確認</h2>
+    <p>確定後は回答を編集できません。内容をご確認のうえ、送信してください。</p>
+    <div id="review"></div>
+    <div class="actions">
+      <button id="cancel" class="secondary">編集に戻る</button>
+      <button id="finalize">確定して送信</button>
+    </div>
+  </section>
+  <section id="complete" class="card narrow" hidden>
+    <h2 id="complete-title" tabindex="-1">回答を受け付けました</h2>
+    <p>ご回答ありがとうございました。お預かりした内容をもとに、あなたの想いをカタチにする準備を進めてまいります。</p>
+  </section>
+  <button id="retry" hidden>確定済み回答の送信を再確認</button>
+  <a id="home" href="./" hidden>新しいヒアリングを開始</a>
 </main></body></html>
