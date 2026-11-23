@@ -1,25 +1,24 @@
-# ALOPEX WEB CONCIERGE V2.0 — private development
+# ALOPEX WEB CONCIERGE V2.0
 
-Status: **BACKEND SCAFFOLD ONLY — NOT DEPLOYED, NOT CLIENT READY**.
+共通入口は /hearing-v2/。会社・担当者・メールを入力し、受信したリンクから回答を開始する。画面の「途中保存」でサーバーへ保存し、同じリンクで別端末から再開する。リンクは30日間有効。旧版の質問原本を直接読み込み、会社名・担当者名・メールの3問は初回入力を反映する。自由記入は1問1200文字まで。
 
-## Source of truth
-Existing 162 questions and 16 sections: `../hearing-v1.1/dist/schema.json`. Preserve all question IDs, wording, option values, conditional visibility, and required-field logic. Do not edit the V1.1 production application.
+## ローカル検証
 
-## Proposed flow
-1. One public entry URL; enter company, contact, and email.
-2. POST `/api/v2/start` creates a D1 draft and sends a 30-day opaque resume link to the email address. No answers are returned from the public entry.
-3. GET/POST `/api/v2/draft` requires the 256-bit resume secret as a Bearer token. Server stores answers in D1.
-4. POST `/api/v2/submit` forwards to a **new independent V2 GAS endpoint** and requires an idempotent receipt before marking a draft submitted. V1.1 GAS and Sheets remain unchanged.
-5. A single V2 Google spreadsheet should contain submissions and answers with submission ID, company, contact, question ID, answer, timestamp; Gmail notification from GAS on confirmed save.
+Node.js 24以降で、hearing-v2 ディレクトリから node verify.mjs を実行する。node preview.mjs で http://127.0.0.1:4178/hearing-v2/ を開く。メール代わりに http://127.0.0.1:4178/__test_mail を使う。テスト受信箱と回答はプロセス終了で消える。架空情報専用で、外部メールやGoogleへの書き込みは発生しない。
 
-## Required before deployment
-- Implement V2 client UI with schema validation, section navigation, progress, save/resume and submission confirmation.
-- Create and verify a dedicated V2 GAS implementation with idempotent submission IDs, single-sheet data model, and notification failure retry.
-- Configure D1, secret bindings, mail domain and deployment; never commit credentials.
-- Add throttling/bot protection, deletion/retention rules, CSP and privacy notice; validate same-email abuse and mail delivery failure handling.
-- Check complete 162-question preservation, conditional requirements, multi-company isolation, duplicate submits, concurrency, PC and actual smartphone.
-- Ensure resume tokens are removed from browser URL after capture; no analytics/referrer leakage. Recommend shorter validity if client privacy policy requires it.
-- Verify end-to-end saving, Gmail receipt and restoration before client release. Existing Rjb data/links must not be modified.
+確認済みのローカル項目は、原本との一致（162問・16分野）、会社間分離、独立したリクエストからの復元、必須回答、条件付き回答の送信、版の競合、同時確定・再送、無効・期限切れリンク、オリジン制限。Googleの実サービス、ブラウザ、端末による検証は別途必要。
 
-## Known limitations of scaffold
-The current Worker is **not a production-ready secure deployment**. It lacks rate limiting, full schema validation, UI, GAS adapter, notification retry, and operational monitoring. Do not publish it or give its URL to clients. The GAS receipt contract is a new requirement, not a verified property of V1.1.
+## 非公開環境の立ち上げ
+
+1. V2専用のCloudflare Worker・D1・プレビュー用ホストを準備する。Workerの公開URLを無効にし、ホスト全体をCloudflare Accessで代表・検収者に限定する。V1.1のルートや環境変数を使用しない。
+2. V2専用GoogleスプレッドシートとApps Scriptを作成する。gas 配下を配置し、Google Sheets APIの高度なサービスを有効にする。スクリプトプロパティ V2_SHEET_ID、V2_NOTIFY_TO、V2_GAS_SECRET を設定。所有者として実行するウェブアプリをデプロイし、Workerから到達できる設定にする。署名用の共有秘密は長い乱数を使う。notifyPending を5分ごとの時間トリガーで登録する。
+3. wrangler.example.jsonc を環境用設定にコピーし、プレビュー用D1 ID・ホスト・Resendで認証済みの送信元を指定する。Resend側のリンク追跡を無効にする。Worker secrets に HASH_KEY、RESEND_API_KEY、GAS_URL、GAS_SECRET を登録する。HASH_KEY は独立した長い乱数で、維持中の再開リンクの復元に必要。値はシークレット管理へ保管する。
+4. 新規D1に schema.sql を適用してWorkerをデプロイする。冒頭の項目と全分野をPC・実機スマートフォンで確認し、架空2社でメール受信・別端末再開・確定・シート・Gmail受信・再送・期限切れを確認する。V1.1は公開設定と回帰テストを確認し、顧客回答へ書き込まない。
+5. V2本番は別のD1、シート、Apps Script、Worker secretsに分ける。本番への承認後、入口の公開と本番スモークテストを行う。顧客送付前にリンクの保持期間と回答の保管期間を確定する。
+
+## 日常運用・復旧
+
+- 1案件1行で、質問IDと原本のラベルが列名になる。確定は正しい案件IDのシート保存受付を確認して完了とする。D1の保留案件はWorkerの定期実行でも再送する。
+- 通知状態は PENDING、SENDING、SENT。SENDING のまま止まった場合は、Gmailの送信済みで案件IDを照合する。送信済みなら SENT に記録し、未送信と確認できた場合は PENDING に戻す。確認不能の場合は再送を保留する。
+- 公開前にV2のD1バックアップ、シートのアクセス制限付きコピー、WorkerのバージョンID、GASのデプロイ版と設定を記録する。秘密は別に保管する。
+- 障害時にV2への新規アクセスを止めるには、V2ホストをAccessで限定する。WorkerまたはGASのコード障害は直前の正常なV2版に戻し、現在のD1とシートを維持する。データ復旧は隔離コピーへ復元して案件ID・通知状態を照合後に行う。V1.1のDB・シート・公開URLに切り替えない。

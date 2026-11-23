@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer"><title>WEB制作ヒアリング | ALOPEX WEB CONCIERGE</title><link rel="stylesheet" href="./style.css"><script type="module" src="./app.mjs"></script></head>
+<body><main>
+<header><p class="brand">ALOPEX WEB CONCIERGE</p><h1>WEB制作ヒアリング</h1></header>
+<p id="status" role="status"></p>
+<form id="entry" hidden>
+<p>ご入力のメールアドレスへ、回答の開始・再開に使う専用リンクをお送りします。有効期間は30日間です。</p>
+<label>会社・店舗名<input name="company" autocomplete="organization" maxlength="180" required></label>
+<label>担当者名<input name="contact" autocomplete="name" maxlength="180" required></label>
+<label>メールアドレス<input name="email" autocomplete="email" maxlength="254" type="email" required></label>
+<p class="privacy">入力内容は、ヒアリングとWEB制作のご連絡に使用します。</p>
+<button>専用リンクをメールで受け取る</button>
+</form>
+<section id="workspace" hidden>
+<label>分野<select id="section"></select></label>
+<p id="progress"></p>
+<h2 id="heading" tabindex="-1"></h2><div id="questions"></div>
+<div class="actions"><button id="prev" class="secondary">前の分野</button><button id="next" class="secondary">次の分野</button><button id="save">途中保存</button><button id="submit" hidden>回答を確定</button></div>
+<div id="confirm" hidden><p>確定後は回答を編集できません。</p><button id="finalize">確定して送信</button> <button id="cancel" class="secondary">編集に戻る</button></div>
+</section>
+<button id="retry" hidden>確定済み回答の送信を再確認</button>
+<a id="home" href="./" hidden>新しいヒアリングを開始</a>
+</main></body></html>
